@@ -1,0 +1,3 @@
+include ':commonRes'
+include ':app'
+rootProject.name = "BaseClean"

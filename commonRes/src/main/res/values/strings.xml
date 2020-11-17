@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BaseClean</string>
+    <string name="test">String from common res</string>
+</resources>
