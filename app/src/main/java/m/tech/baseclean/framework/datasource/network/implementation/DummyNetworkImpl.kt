@@ -12,6 +12,6 @@ constructor(
 ) : DummyNetworkDataSource {
 
     override suspend fun getDummies(): List<Dummy> =
-        dummyNetworkMapper.fromEntities(dummyApi.getDummies())
+        dummyNetworkMapper.toDomainList(dummyApi.getDummies())
 
 }

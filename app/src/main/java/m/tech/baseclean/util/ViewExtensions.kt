@@ -1,23 +1,44 @@
 package m.tech.baseclean.util
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.os.SystemClock
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
-fun View.changeColor(newColor: Int) {
+fun Context.getActionBarHeight(): Int {
+    val tv = TypedValue()
+    if (this.theme?.resolveAttribute(
+            android.R.attr.actionBarSize,
+            tv,
+            true
+        ) == true
+    ) {
+        return TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+    }
+    return 0
+}
+
+fun View.changeBackgroundColor(newColor: Int) {
     setBackgroundColor(
         ContextCompat.getColor(
             context,
             newColor
         )
     )
+}
+
+fun ImageView.setTintColor(@ColorRes color: Int) {
+    imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
 }
 
 fun TextView.changeTextColor(newColor: Int) {
@@ -102,6 +123,15 @@ fun Fragment.displayToast(@StringRes msg: Int) {
 }
 
 fun Fragment.convertDpToPx(dp: Int): Int {
+    val dip = dp.toFloat()
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dip,
+        resources.displayMetrics
+    ).toInt()
+}
+
+fun Context.convertDpToPx(dp: Int): Int {
     val dip = dp.toFloat()
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,

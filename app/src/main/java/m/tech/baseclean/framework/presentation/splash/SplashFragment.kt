@@ -4,8 +4,10 @@ import android.util.Log
 import android.view.View
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_splash.*
 import m.tech.baseclean.R
 import m.tech.baseclean.framework.presentation.common.BaseFragment
+import m.tech.baseclean.util.displayToast
 
 @AndroidEntryPoint
 class SplashFragment(
@@ -18,16 +20,19 @@ class SplashFragment(
 
     override fun subscribeObserver(view: View) {
         commonViewModel.dummies.observe(viewLifecycleOwner) {
-            handleLoadingStateWithDialog(it)
+            handleLoadingState(it, progress) //handle loading with a view
+//            handleLoadingStateWithDialog(it) //handle loading with dialog
 
             getData(it)?.let { list ->
                 for (dummy in list) {
+                    displayToast("It's working")
                     Log.d(TAG, "getData: ${dummy.name}")
                 }
             }
 
-            getErrorCode(it)?.let {
-                Log.e(TAG, "error: $it")
+            getErrorCode(it)?.let { code ->
+                Log.e(TAG, "error: $code")
+                displayToast("Error $code")
             }
 
         }

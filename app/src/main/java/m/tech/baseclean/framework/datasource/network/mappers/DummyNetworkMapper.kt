@@ -1,23 +1,23 @@
 package m.tech.baseclean.framework.datasource.network.mappers
 
 import m.tech.baseclean.business.domain.Dummy
-import m.tech.baseclean.framework.datasource.EntityMapper
+import m.tech.baseclean.framework.datasource.DomainMapper
 import m.tech.baseclean.framework.datasource.network.model.response.DummyNetworkEntity
 import javax.inject.Inject
 
 class DummyNetworkMapper
 @Inject
-constructor() : EntityMapper<DummyNetworkEntity, Dummy> {
+constructor() : DomainMapper<DummyNetworkEntity, Dummy> {
 
-    override fun fromEntity(entity: DummyNetworkEntity): Dummy {
+    override fun toDomain(model: DummyNetworkEntity): Dummy {
         return Dummy(
-            entity.id,
-            entity.title,
-            entity.body
+            model.id,
+            model.title,
+            model.body
         )
     }
 
-    override fun toEntity(domainModel: Dummy): DummyNetworkEntity {
+    override fun fromDomain(domainModel: Dummy): DummyNetworkEntity {
         return DummyNetworkEntity(
             domainModel.id,
             domainModel.name,
@@ -26,12 +26,12 @@ constructor() : EntityMapper<DummyNetworkEntity, Dummy> {
         )
     }
 
-    fun fromEntities(list: List<DummyNetworkEntity>): List<Dummy> = list.map {
-        fromEntity(it)
+    fun toDomainList(list: List<DummyNetworkEntity>): List<Dummy> = list.map {
+        toDomain(it)
     }
 
-    fun toEntities(list: List<Dummy>): List<DummyNetworkEntity> = list.map {
-        toEntity(it)
+    fun fromDomainList(list: List<Dummy>): List<DummyNetworkEntity> = list.map {
+        fromDomain(it)
     }
 
 }

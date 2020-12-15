@@ -8,6 +8,8 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import m.tech.baseclean.R
@@ -20,6 +22,7 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
     protected val commonViewModel: CommonViewModel by activityViewModels()
 
     lateinit var stateChangeListener: DataStateChangeListener
+    lateinit var navController: NavController
 
     var dialogLoading: MaterialDialog? = null
 
@@ -34,6 +37,7 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = findNavController()
 
         init(view)
         subscribeObserver(view)
@@ -52,18 +56,27 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
 
     fun handleLoadingStateWithDialog(data: DataState<*>) {
         if (data is DataState.Loading && context != null) {
-            if (dialogLoading == null) {
-                dialogLoading = MaterialDialog(requireContext()).apply {
-                    cancelable(false)
-                    customView(R.layout.dialog_loading)
-                }
-            }
-            dialogLoading?.show {
-                cornerRadius(16f)
-            }
+            showDialogLoading()
         } else {
-            dialogLoading?.dismiss()
+            hideDialogLoading()
         }
+    }
+
+    fun showDialogLoading() {
+        if (dialogLoading == null) {
+            dialogLoading = MaterialDialog(requireContext()).apply {
+                cancelable(false)
+                customView(R.layout.dialog_loading)
+            }
+        }
+        dialogLoading?.show {
+            cornerRadius(16f)
+        }
+    }
+
+    fun hideDialogLoading() {
+        dialogLoading?.dismiss()
+        dialogLoading = null
     }
 
     fun <T> getData(data: DataState<T>): T? {
@@ -84,10 +97,35 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
         return null
     }
 
-    fun NavController.safeNav(currentDestination: Int, targetDestination: Int) {
-        if (this.currentDestination?.id == currentDestination) {
+    fun safeNav(currentDestination: Int, action: Int) {
+        if (navController.currentDestination?.id == currentDestination) {
             try {
-                this.navigate(targetDestination)
+                navController.navigate(action)
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "safeNav: ${e.message}")
+            }
+        }
+    }
+
+    fun safeNav(currentDestination: Int, navDirections: NavDirections) {
+        if (navController.currentDestination?.id == currentDestination) {
+            try {
+                navController.navigate(navDirections)
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "safeNav: ${e.message}")
+            }
+        }
+    }
+
+    @Deprecated(
+        message = "Use safeArgs instead",
+        replaceWith = ReplaceWith("safeNav(currentDestination, navDirections)"),
+        level = DeprecationLevel.WARNING
+    )
+    fun safeNav(currentDestination: Int, action: Int, bundle: Bundle) {
+        if (navController.currentDestination?.id == currentDestination) {
+            try {
+                navController.navigate(action, bundle)
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, "safeNav: ${e.message}")
             }

@@ -12,22 +12,22 @@ constructor(
 ) : DummyCacheDataSource {
 
     override suspend fun getDummies(): List<Dummy> =
-        dummyMapper.fromEntities(dummyDao.getDummies())
+        dummyMapper.toDomainList(dummyDao.getDummies())
 
     override suspend fun getDummyById(id: Int): Dummy? =
         dummyDao.getDummyById(id)?.let {
-            dummyMapper.fromEntity(it)
+            dummyMapper.toDomain(it)
         }
 
     override suspend fun updateDummy(dummy: Dummy) {
-        dummyDao.updateDummy(dummyMapper.toEntity(dummy))
+        dummyDao.updateDummy(dummyMapper.fromDomain(dummy))
     }
 
     override suspend fun addDummy(dummy: Dummy) {
-        dummyDao.addDummy(dummyMapper.toEntity(dummy))
+        dummyDao.addDummy(dummyMapper.fromDomain(dummy))
     }
 
     override suspend fun removeDummy(dummy: Dummy) {
-        dummyDao.removeDummy(dummyMapper.toEntity(dummy))
+        dummyDao.removeDummy(dummyMapper.fromDomain(dummy))
     }
 }
