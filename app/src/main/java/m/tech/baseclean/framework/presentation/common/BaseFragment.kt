@@ -7,6 +7,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -99,26 +102,40 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
 
     fun safeNav(currentDestination: Int, action: Int) {
         if (navController.currentDestination?.id == currentDestination) {
-            try {
-                navController.navigate(action)
-            } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "safeNav: ${e.message}")
-            }
+            lifecycle.addObserver(object : LifecycleEventObserver {
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        lifecycle.removeObserver(this)
+                        try {
+                            navController.navigate(action)
+                        } catch (e: IllegalArgumentException) {
+                            Log.e(TAG, "safeNav: ${e.message}")
+                        }
+                    }
+                }
+            })
         }
     }
 
     fun safeNav(currentDestination: Int, navDirections: NavDirections) {
         if (navController.currentDestination?.id == currentDestination) {
-            try {
-                navController.navigate(navDirections)
-            } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "safeNav: ${e.message}")
-            }
+            lifecycle.addObserver(object : LifecycleEventObserver {
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        lifecycle.removeObserver(this)
+                        try {
+                            navController.navigate(navDirections)
+                        } catch (e: IllegalArgumentException) {
+                            Log.e(TAG, "safeNav: ${e.message}")
+                        }
+                    }
+                }
+            })
         }
     }
 
     @Deprecated(
-        message = "Use safeArgs instead",
+        message = "Use safeArgs instead. Will be remove in next version",
         replaceWith = ReplaceWith("safeNav(currentDestination, navDirections)"),
         level = DeprecationLevel.WARNING
     )

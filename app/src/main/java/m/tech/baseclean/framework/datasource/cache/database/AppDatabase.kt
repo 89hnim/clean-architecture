@@ -3,11 +3,11 @@ package m.tech.baseclean.framework.datasource.cache.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import m.tech.baseclean.framework.datasource.cache.database.dao.DummyDao
-import m.tech.baseclean.framework.datasource.cache.model.DummyCacheEntity
+import m.tech.baseclean.framework.datasource.cache.model.DummyEntity
 
 @Database(
     entities = [
-        DummyCacheEntity::class
+        DummyEntity::class
     ],
     version = 1
 )

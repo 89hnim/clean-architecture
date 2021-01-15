@@ -7,7 +7,7 @@ import dagger.hilt.android.components.ApplicationComponent
 import m.tech.baseclean.business.data.network.abstraction.DummyNetworkDataSource
 import m.tech.baseclean.framework.datasource.network.api.DummyApi
 import m.tech.baseclean.framework.datasource.network.implementation.DummyNetworkImpl
-import m.tech.baseclean.framework.datasource.network.mappers.DummyNetworkMapper
+import m.tech.baseclean.framework.datasource.network.mappers.DummyDtoMapper
 
 @InstallIn(ApplicationComponent::class)
 @Module
@@ -16,10 +16,10 @@ object NetworkImplModule {
     @Provides
     fun provideDummyNetworkDataSource(
         dummyApi: DummyApi,
-        dummyNetworkMapper: DummyNetworkMapper
+        dummyDtoMapper: DummyDtoMapper
     ): DummyNetworkDataSource =
         DummyNetworkImpl(
-            dummyApi, dummyNetworkMapper
+            dummyApi, dummyDtoMapper
         )
 
 }

@@ -3,10 +3,10 @@ package m.tech.baseclean.framework.datasource.cache.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import m.tech.baseclean.framework.datasource.cache.model.DummyCacheEntity.Companion.TABLE_NAME
+import m.tech.baseclean.framework.datasource.cache.model.DummyEntity.Companion.TABLE_NAME
 
 @Entity(tableName = TABLE_NAME)
-data class DummyCacheEntity(
+data class DummyEntity(
 
     @PrimaryKey
     @ColumnInfo(name = ID)

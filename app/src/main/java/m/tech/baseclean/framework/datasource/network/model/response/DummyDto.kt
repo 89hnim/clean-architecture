@@ -2,7 +2,7 @@ package m.tech.baseclean.framework.datasource.network.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class DummyNetworkEntity(
+data class DummyDto(
 
     @SerializedName(ID)
     val id: Int,

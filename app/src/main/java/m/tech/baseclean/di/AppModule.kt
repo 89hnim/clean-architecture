@@ -30,7 +30,7 @@ object AppModule {
     @Provides
     fun provideSharedPreferences(application: Application): SharedPreferences {
         return application.getSharedPreferences(
-            "DL_LIB_PREFERENCES",
+            "CLEAN_PREFERENCES",
             Context.MODE_PRIVATE
         )
     }

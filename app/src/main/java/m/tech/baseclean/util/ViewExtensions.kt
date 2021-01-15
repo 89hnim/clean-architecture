@@ -7,6 +7,9 @@ import android.os.SystemClock
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -49,6 +52,25 @@ fun TextView.changeTextColor(newColor: Int) {
         )
     )
 }
+
+fun View.animRotation() {
+    val anim = RotateAnimation(
+        0f, 360f,
+        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+    )
+    anim.interpolator = LinearInterpolator()
+    anim.duration = 1500
+    anim.isFillEnabled = true
+    anim.repeatCount = Animation.INFINITE
+    anim.fillAfter = true
+    startAnimation(anim)
+}
+
+fun View.isShow() = visibility == View.VISIBLE
+
+fun View.isGone() = visibility == View.GONE
+
+fun View.isInvisible() = visibility == View.INVISIBLE
 
 fun View.show() {
     visibility = View.VISIBLE

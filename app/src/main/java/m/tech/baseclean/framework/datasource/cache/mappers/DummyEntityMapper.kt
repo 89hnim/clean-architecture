@@ -2,14 +2,14 @@ package m.tech.baseclean.framework.datasource.cache.mappers
 
 import m.tech.baseclean.business.domain.Dummy
 import m.tech.baseclean.framework.datasource.DomainMapper
-import m.tech.baseclean.framework.datasource.cache.model.DummyCacheEntity
+import m.tech.baseclean.framework.datasource.cache.model.DummyEntity
 import javax.inject.Inject
 
-class DummyCacheMapper
+class DummyEntityMapper
 @Inject
-constructor() : DomainMapper<DummyCacheEntity, Dummy> {
+constructor() : DomainMapper<DummyEntity, Dummy> {
 
-    override fun toDomain(model: DummyCacheEntity): Dummy {
+    override fun toDomain(model: DummyEntity): Dummy {
         return Dummy(
             model.id,
             model.name,
@@ -17,19 +17,19 @@ constructor() : DomainMapper<DummyCacheEntity, Dummy> {
         )
     }
 
-    override fun fromDomain(domainModel: Dummy): DummyCacheEntity {
-        return DummyCacheEntity(
+    override fun fromDomain(domainModel: Dummy): DummyEntity {
+        return DummyEntity(
             domainModel.id,
             domainModel.name,
             domainModel.desc
         )
     }
 
-    fun toDomainList(list: List<DummyCacheEntity>): List<Dummy> = list.map {
+    fun toDomainList(list: List<DummyEntity>): List<Dummy> = list.map {
         toDomain(it)
     }
 
-    fun fromDomainList(list: List<Dummy>): List<DummyCacheEntity> = list.map {
+    fun fromDomainList(list: List<Dummy>): List<DummyEntity> = list.map {
         fromDomain(it)
     }
 
