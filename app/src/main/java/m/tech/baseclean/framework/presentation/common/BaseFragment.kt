@@ -3,8 +3,9 @@ package m.tech.baseclean.framework.presentation.common
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import androidx.annotation.LayoutRes
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.viewbinding.ViewBinding
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import m.tech.baseclean.R
@@ -20,12 +22,19 @@ import m.tech.baseclean.business.data.DataState
 import m.tech.baseclean.util.gone
 import m.tech.baseclean.util.show
 
-abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
+typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
+
+abstract class BaseFragment<Binding : ViewBinding>(
+    private val inflate: Inflate<Binding>
+) : Fragment() {
 
     protected val commonViewModel: CommonViewModel by activityViewModels()
 
     lateinit var stateChangeListener: DataStateChangeListener
     lateinit var navController: NavController
+
+    private var _binding: Binding? = null
+    val binding get() = _binding!!
 
     var dialogLoading: MaterialDialog? = null
 
@@ -36,6 +45,15 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
         } catch (e: ClassCastException) {
             Log.e(TAG, "$context must implement DataStateChangeListener")
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = inflate.invoke(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,11 +68,11 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
 
     abstract fun subscribeObserver(view: View)
 
-    fun handleLoadingState(data: DataState<*>, view: View) {
+    fun handleLoadingState(data: DataState<*>, view: View?) {
         if (data is DataState.Loading)
-            view.show()
+            view?.show()
         else
-            view.gone()
+            view?.gone()
     }
 
     fun handleLoadingStateWithDialog(data: DataState<*>) {
@@ -131,21 +149,6 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
                     }
                 }
             })
-        }
-    }
-
-    @Deprecated(
-        message = "Use safeArgs instead. Will be remove in next version",
-        replaceWith = ReplaceWith("safeNav(currentDestination, navDirections)"),
-        level = DeprecationLevel.WARNING
-    )
-    fun safeNav(currentDestination: Int, action: Int, bundle: Bundle) {
-        if (navController.currentDestination?.id == currentDestination) {
-            try {
-                navController.navigate(action, bundle)
-            } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "safeNav: ${e.message}")
-            }
         }
     }
 

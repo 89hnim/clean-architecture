@@ -12,4 +12,11 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tvTest"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="abc"
+        android:textSize="100sp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
