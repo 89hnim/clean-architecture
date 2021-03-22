@@ -3,13 +3,13 @@ package m.tech.baseclean.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import m.tech.baseclean.framework.datasource.network.api.DummyApi
 import m.tech.baseclean.framework.datasource.network.api.NetworkConstants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
 object RetrofitModule {
 

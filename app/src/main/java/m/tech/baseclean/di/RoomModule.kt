@@ -5,12 +5,12 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import m.tech.baseclean.framework.datasource.cache.database.AppDatabase
 import m.tech.baseclean.framework.datasource.cache.database.dao.DummyDao
 
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
 object RoomModule {
 
@@ -21,7 +21,7 @@ object RoomModule {
             AppDatabase::class.java,
             AppDatabase.DATABASE_NAME
         )
-            .fallbackToDestructiveMigration() //TODO: change this
+            .fallbackToDestructiveMigration() //TODO: update this if needed
             .build()
     }
 
