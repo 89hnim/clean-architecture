@@ -84,7 +84,7 @@ fun View.inv() {
     visibility = View.INVISIBLE
 }
 
-fun View.setPreventDoubleClick(debounceTime: Long, action: () -> Unit) {
+fun View.setPreventDoubleClick(debounceTime: Long = 500, action: () -> Unit) {
     this.setOnClickListener(object : View.OnClickListener {
         private var lastClickTime: Long = 0
         override fun onClick(v: View?) {
@@ -95,7 +95,7 @@ fun View.setPreventDoubleClick(debounceTime: Long, action: () -> Unit) {
     })
 }
 
-fun View.setPreventDoubleClickScaleView(debounceTime: Long, action: () -> Unit) {
+fun View.setPreventDoubleClickScaleView(debounceTime: Long = 500, action: () -> Unit) {
     setOnTouchListener(object : View.OnTouchListener {
         private var lastClickTime: Long = 0
         private var rect: Rect? = null
