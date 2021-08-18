@@ -43,7 +43,7 @@ __Framework Module__
 ![Alt text](https://camo.githubusercontent.com/b1521f6c9e672cf5077ba69ceab27679ea8a82074a89931d958895476756e2c8/68747470733a2f2f636f64696e67776974686d697463682e73332e616d617a6f6e6177732e636f6d2f7374617469632f636f75727365732f32312f636c65616e5f6172636869746563747572655f6469616772616d732e706e67)
 
 ## Release
-__18/08/2021__: Simplfy packages, add timber, follow best practices: main-safe, repository pattern.<br>
+__18/08/2021__: Simplfy packages, add timber, follow best practices: inject dispatchers, main-safe, repository pattern.<br>
 __22/02/2021__: Add view binding, remove deprecated safeNav function.<br>
 __15/01/2021__: Add more extensions util (such as: GlideEx, HandlerEx ...), update safeNav function with lifecycle, refactor naming convention<br>
 __15/12/2020__: Add utility functions, refactor mapper class, minSdkVersion 21<br>
