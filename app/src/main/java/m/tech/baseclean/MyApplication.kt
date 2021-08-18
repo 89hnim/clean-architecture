@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.zxy.recovery.core.Recovery
 import dagger.hilt.android.HiltAndroidApp
 import m.tech.baseclean.framework.MainActivity
+import timber.log.Timber
 
 @HiltAndroidApp
 class MyApplication : Application() {
@@ -23,6 +24,8 @@ class MyApplication : Application() {
                 .recoverEnabled(true)
                 .silent(false, Recovery.SilentMode.RECOVER_ACTIVITY_STACK)
                 .init(this)
+
+            Timber.plant(Timber.DebugTree())
         }
     }
 

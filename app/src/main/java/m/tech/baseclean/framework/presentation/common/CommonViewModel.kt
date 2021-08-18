@@ -1,34 +1,53 @@
 package m.tech.baseclean.framework.presentation.common
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import m.tech.baseclean.business.data.DataState
-import m.tech.baseclean.business.domain.Dummy
-import m.tech.baseclean.business.interactors.GetDummies
+import m.tech.baseclean.business.domain.DummyModel
+import m.tech.baseclean.business.interactors.GetDummiesOneTimeUseCase
+import m.tech.baseclean.business.interactors.GetDummiesUseCase
+import timber.log.Timber
+import javax.inject.Inject
 
+@HiltViewModel
 class CommonViewModel
-@ViewModelInject
+@Inject
 constructor(
-    @Assisted private val savedStateHandler: SavedStateHandle,
-    private val getDummies: GetDummies
+    private val savedStateHandler: SavedStateHandle,
+    private val getDummiesUseCase: GetDummiesUseCase,
+    private val getDummiesOneTimeUseCase: GetDummiesOneTimeUseCase
 ) : ViewModel() {
 
-    private val _dummies = MutableLiveData<DataState<List<Dummy>>>()
-    val dummies: LiveData<DataState<List<Dummy>>>
-        get() = _dummies
+    private val _dummiesLiveData = MutableLiveData<List<DummyModel>>()
+    val dummiesLiveData: LiveData<List<DummyModel>>
+        get() = _dummiesLiveData
 
     fun getDummies() = viewModelScope.launch {
-        withContext(IO) {
-            getDummies.getDummies(true).collect { dataState ->
-                withContext(Main) {
-                    _dummies.value = dataState
+        getDummiesUseCase(true).collect { result ->
+            when (result) {
+                is DataState.Loading -> {
+                    Timber.e("getDummies loading")
                 }
+                is DataState.Success -> {
+                    Timber.e("getDummies ${result.data.size}")
+                    _dummiesLiveData.value = result.data
+                }
+                is DataState.Error -> {
+                    Timber.e("getDummies ${result.error}")
+                }
+            }
+        }
+    }
+
+    fun getDummiesOneTime() = viewModelScope.launch {
+        when (val result = getDummiesOneTimeUseCase()) {
+            is DataState.Success -> {
+                Timber.e("getDummiesOneTime ${result.data.size}")
+            }
+            is DataState.Error -> {
+                Timber.e("getDummiesOneTime ${result.error}")
             }
         }
     }

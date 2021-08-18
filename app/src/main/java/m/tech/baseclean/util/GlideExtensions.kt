@@ -14,6 +14,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -247,7 +248,7 @@ fun saveBitmap(
         fos?.flush()
         fos?.close()
     } catch (e: Exception) {
-        Log.d("AppDebug", "Save Error $e")
+        Timber.e("saveBitmap $e")
         listener?.onDownloadFailed("${e.message}")
     }
 }

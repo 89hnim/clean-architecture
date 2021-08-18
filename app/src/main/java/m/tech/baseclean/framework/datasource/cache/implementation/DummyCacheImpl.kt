@@ -1,33 +1,27 @@
 package m.tech.baseclean.framework.datasource.cache.implementation
 
-import m.tech.baseclean.business.data.cache.abstraction.DummyCacheDataSource
-import m.tech.baseclean.business.domain.Dummy
+import m.tech.baseclean.business.data.cache.DummyCacheDataSource
 import m.tech.baseclean.framework.datasource.cache.database.dao.DummyDao
-import m.tech.baseclean.framework.datasource.cache.mappers.DummyEntityMapper
+import m.tech.baseclean.framework.datasource.cache.model.DummyEntity
 
 class DummyCacheImpl
 constructor(
-    private val dummyDao: DummyDao,
-    private val dummyMapper: DummyEntityMapper
+    private val dummyDao: DummyDao
 ) : DummyCacheDataSource {
 
-    override suspend fun getDummies(): List<Dummy> =
-        dummyMapper.toDomainList(dummyDao.getDummies())
+    override suspend fun getDummies(): List<DummyEntity> = dummyDao.getDummies()
 
-    override suspend fun getDummyById(id: Int): Dummy? =
-        dummyDao.getDummyById(id)?.let {
-            dummyMapper.toDomain(it)
-        }
+    override suspend fun getDummyById(id: Int): DummyEntity? = dummyDao.getDummyById(id)
 
-    override suspend fun updateDummy(dummy: Dummy) {
-        dummyDao.updateDummy(dummyMapper.fromDomain(dummy))
+    override suspend fun updateDummy(dummy: DummyEntity) {
+        dummyDao.updateDummy(dummy)
     }
 
-    override suspend fun addDummy(dummy: Dummy) {
-        dummyDao.addDummy(dummyMapper.fromDomain(dummy))
+    override suspend fun addDummy(dummy: DummyEntity) {
+        dummyDao.addDummy(dummy)
     }
 
-    override suspend fun removeDummy(dummy: Dummy) {
-        dummyDao.removeDummy(dummyMapper.fromDomain(dummy))
+    override suspend fun removeDummy(dummy: DummyEntity) {
+        dummyDao.removeDummy(dummy)
     }
 }

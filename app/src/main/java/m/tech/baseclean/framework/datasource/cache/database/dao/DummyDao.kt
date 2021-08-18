@@ -2,8 +2,6 @@ package m.tech.baseclean.framework.datasource.cache.database.dao
 
 import androidx.room.*
 import m.tech.baseclean.framework.datasource.cache.model.DummyEntity
-import m.tech.baseclean.framework.datasource.cache.model.DummyEntity.Companion.ID
-import m.tech.baseclean.framework.datasource.cache.model.DummyEntity.Companion.TABLE_NAME
 
 @Dao
 interface DummyDao {
@@ -17,10 +15,10 @@ interface DummyDao {
     @Delete
     suspend fun removeDummy(dummy: DummyEntity)
 
-    @Query("SELECT * FROM $TABLE_NAME")
+    @Query("SELECT * FROM dummy")
     suspend fun getDummies(): List<DummyEntity>
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :id")
+    @Query("SELECT * FROM dummy WHERE id = :id")
     suspend fun getDummyById(id: Int): DummyEntity?
 
 }

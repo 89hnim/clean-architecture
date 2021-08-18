@@ -7,7 +7,7 @@ import retrofit2.http.GET
 interface DummyApi {
 
     @GET(POSTS)
-    suspend fun getDummies(): List<DummyDto>
+    suspend fun getDummies(): List<DummyDto>?
 
     //example of post body
 //    @POST(POSTS)

@@ -3,27 +3,27 @@ package m.tech.baseclean.framework.datasource.cache.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import m.tech.baseclean.framework.datasource.cache.model.DummyEntity.Companion.TABLE_NAME
+import m.tech.baseclean.business.domain.DummyModel
 
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = "dummy")
 data class DummyEntity(
-
     @PrimaryKey
-    @ColumnInfo(name = ID)
+    @ColumnInfo(name = "id")
     val id: Int,
 
-    @ColumnInfo(name = NAME)
+    @ColumnInfo(name = "name")
     val name: String,
 
-    @ColumnInfo(name = DESC)
+    @ColumnInfo(name = "desc")
     val desc: String
-) {
+)
 
-    companion object {
-        const val TABLE_NAME = "dummy"
-        const val ID = "id"
-        const val NAME = "name"
-        const val DESC = "desc"
-    }
-
+fun DummyEntity.mapToDomain(): DummyModel {
+    return DummyModel(
+        id = id,
+        name = name,
+        desc = desc
+    )
 }
+
+fun List<DummyEntity>.mapToDomain() = map { it.mapToDomain() }

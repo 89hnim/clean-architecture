@@ -1,28 +1,22 @@
 package m.tech.baseclean.framework.datasource.network.model.response
 
 import com.google.gson.annotations.SerializedName
+import m.tech.baseclean.business.domain.DummyModel
 
 data class DummyDto(
+    @SerializedName("id") val id: Int?,
+    @SerializedName("title") val title: String?,
+    @SerializedName("body") val body: String?,
+    @SerializedName("userId") val userId: Int?
+)
 
-    @SerializedName(ID)
-    val id: Int,
-
-    @SerializedName(TITLE)
-    val title: String,
-
-    @SerializedName(BODY)
-    val body: String,
-
-    @SerializedName(USER_ID)
-    val userId: Int
-
-) {
-
-    companion object{
-        const val ID = "id"
-        const val TITLE = "title"
-        const val BODY = "body"
-        const val USER_ID = "userId"
-    }
-
+fun DummyDto.mapToDomain(): DummyModel? {
+    if (id == null) return null
+    return DummyModel(
+        id = id,
+        name = title.orEmpty(),
+        desc = body.orEmpty(),
+    )
 }
+
+fun List<DummyDto>.mapToDomain() = mapNotNull { it.mapToDomain() }

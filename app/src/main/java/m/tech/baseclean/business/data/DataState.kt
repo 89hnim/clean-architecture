@@ -1,29 +1,10 @@
 package m.tech.baseclean.business.data
 
-sealed class DataState<T>(
-    var data: T? = null,
-    var error: Event<Int>? = null
-) {
-    class Success<T>(data: T? = null) : DataState<T>(data = data){
-        override fun toString(): String {
-            return "Success ${data.toString()}"
-        }
-    }
-
-    class Loading<T>(data: T? = null) : DataState<T>(){
-        override fun toString(): String {
-            return "Loading ${data.toString()}"
-        }
-    }
-
-    class Error<T>(code: Int, data: T? = null) :
-        DataState<T>(data = data, error = Event.createErrorEvent(code)){
-        override fun toString(): String {
-            return "Error errorCode ${error?.peekContent()}, ${data.toString()}"
-        }
-    }
+sealed class DataState<out T> {
+    data class Loading<T>(val data: T? = null) : DataState<T>()
+    data class Success<T>(val data: T) : DataState<T>()
+    data class Error<T>(val error: Exception, val data: T? = null) : DataState<T>()
 }
-
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
@@ -56,27 +37,15 @@ class Event<T>(private val content: T) {
 
     companion object {
 
-        fun createErrorEvent(message: String): Event<String>? {
+        fun createErrorEvent(message: String): Event<String> {
             return Event(message)
 
         }
 
-        fun createErrorEvent(code: Int): Event<Int>? {
+        fun createErrorEvent(code: Int): Event<Int> {
             return Event(code)
 
         }
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-

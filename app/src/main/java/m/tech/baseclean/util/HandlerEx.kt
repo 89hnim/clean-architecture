@@ -1,15 +1,14 @@
 package m.tech.baseclean.util
 
 import android.os.Handler
-import android.util.Log
-import java.lang.Exception
+import timber.log.Timber
 
 fun Handler.safeDelay(delayMillis: Long = 0, action: () -> Unit) {
     postDelayed({
         try {
             action()
         } catch (e: Exception) {
-            Log.e("AppDebug", "safeDelay: $e")
+            Timber.e("safeDelay: $e")
         }
     }, delayMillis)
 }

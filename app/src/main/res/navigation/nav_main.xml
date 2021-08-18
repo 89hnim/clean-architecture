@@ -9,6 +9,5 @@
         android:id="@+id/splashFragment"
         android:name="m.tech.baseclean.framework.presentation.splash.SplashFragment"
         android:label="SplashFragment"
-        tools:layout="@layout/fragment_splash">
-    </fragment>
+        tools:layout="@layout/fragment_splash" />
 </navigation>
