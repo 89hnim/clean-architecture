@@ -2,6 +2,7 @@ package m.tech.baseclean.util
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Rect
 import android.os.SystemClock
 import android.util.TypedValue
@@ -10,41 +11,31 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
 fun Context.getActionBarHeight(): Int {
     val tv = TypedValue()
-    if (this.theme?.resolveAttribute(
-            android.R.attr.actionBarSize,
-            tv,
-            true
-        ) == true
-    ) {
+    if (this.theme?.resolveAttribute(android.R.attr.actionBarSize, tv, true) == true) {
         return TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
     }
     return 0
 }
 
-fun View.changeBackgroundColor(newColor: Int) {
-    setBackgroundColor(
-        ContextCompat.getColor(
-            context,
-            newColor
-        )
-    )
+fun View.changeBackgroundColorCompat(color: Int) {
+    setBackgroundColor(ContextCompat.getColor(context, color))
 }
 
-fun ImageView.setTintColor(@ColorRes color: Int) {
+fun AppCompatImageView.setTintColorCompat(@ColorRes color: Int) {
     imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
 }
 
-fun TextView.changeTextColor(newColor: Int) {
+fun AppCompatTextView.setTextColorCompat(newColor: Int) {
     setTextColor(
         ContextCompat.getColor(
             context,
@@ -144,22 +135,18 @@ fun Fragment.displayToast(@StringRes msg: Int) {
     Toast.makeText(context, getString(msg), Toast.LENGTH_SHORT).show()
 }
 
-fun Fragment.convertDpToPx(dp: Int): Int {
-    val dip = dp.toFloat()
-    return TypedValue.applyDimension(
+val Number.fromDpToPx
+    get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        dip,
-        resources.displayMetrics
-    ).toInt()
-}
+        this.toFloat(),
+        Resources.getSystem().displayMetrics
+    )
 
-fun Context.convertDpToPx(dp: Int): Int {
-    val dip = dp.toFloat()
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dip,
-        resources.displayMetrics
-    ).toInt()
-}
+val Number.fromSpToPx
+    get() = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        this.toFloat(),
+        Resources.getSystem().displayMetrics
+    )
 
 

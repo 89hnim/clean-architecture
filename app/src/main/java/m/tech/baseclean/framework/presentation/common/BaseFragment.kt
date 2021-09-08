@@ -5,43 +5,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import androidx.viewbinding.ViewBinding
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import m.tech.baseclean.R
+import m.tech.baseclean.util.autoCleared
 import timber.log.Timber
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-abstract class BaseFragment<Binding : ViewBinding>(
+abstract class BaseFragment<Binding : ViewDataBinding>(
     private val inflate: Inflate<Binding>
 ) : Fragment() {
 
     protected val commonViewModel: CommonViewModel by activityViewModels()
 
-    lateinit var stateChangeListener: DataStateChangeListener
-    lateinit var navController: NavController
+    protected lateinit var activityObserver: ActivityObserver //communicate with the parent activity
 
-    private var _binding: Binding? = null
-    val binding get() = _binding!!
+    protected var binding by autoCleared<Binding>()
 
-    var dialogLoading: MaterialDialog? = null
+    private var dialogLoading: AlertDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            stateChangeListener = context as DataStateChangeListener
+            activityObserver = context as ActivityObserver
         } catch (e: ClassCastException) {
-            Timber.e("$context must implement DataStateChangeListener")
+            Timber.e("$context must implement ActivityObserver")
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initData()
     }
 
     override fun onCreateView(
@@ -49,21 +49,25 @@ abstract class BaseFragment<Binding : ViewBinding>(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = inflate.invoke(inflater, container, false)
-        navController = findNavController()
+        binding = inflate.invoke(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        initDataBinding()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
     }
 
     fun showDialogLoading() {
         if (dialogLoading == null) {
-            dialogLoading = MaterialDialog(requireContext()).apply {
-                cancelable(false)
-                customView(R.layout.dialog_loading)
-            }
+            dialogLoading = MaterialAlertDialogBuilder(requireContext()).apply {
+                setCancelable(false)
+                setView(R.layout.dialog_loading)
+            }.create()
         }
-        dialogLoading?.show {
-            cornerRadius(16f)
-        }
+        dialogLoading?.show()
     }
 
     fun hideDialogLoading() {
@@ -71,37 +75,30 @@ abstract class BaseFragment<Binding : ViewBinding>(
         dialogLoading = null
     }
 
-    fun safeNav(currentDestination: Int, action: Int) {
+    fun safeNav(currentDestination: Int, navDirections: NavDirections) {
+        val navController = findNavController()
         if (navController.currentDestination?.id == currentDestination) {
-            lifecycle.addObserver(object : LifecycleEventObserver {
-                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                    if (event == Lifecycle.Event.ON_RESUME) {
-                        lifecycle.removeObserver(this)
-                        try {
-                            navController.navigate(action)
-                        } catch (e: IllegalArgumentException) {
-                            Timber.e("safeNav: ${e.message}")
-                        }
-                    }
-                }
-            })
+            try {
+                navController.navigate(navDirections)
+            } catch (e: Exception) {
+                Timber.e("safeNav: ${e.message}")
+            }
         }
     }
 
-    fun safeNav(currentDestination: Int, navDirections: NavDirections) {
-        if (navController.currentDestination?.id == currentDestination) {
-            lifecycle.addObserver(object : LifecycleEventObserver {
-                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                    if (event == Lifecycle.Event.ON_RESUME) {
-                        lifecycle.removeObserver(this)
-                        try {
-                            navController.navigate(navDirections)
-                        } catch (e: IllegalArgumentException) {
-                            Timber.e("safeNav: ${e.message}")
-                        }
-                    }
-                }
-            })
-        }
-    }
+    /**
+     * setup data binding (if needed)
+     */
+    open fun initDataBinding() {}
+
+    /**
+     * setup views like setup view, listener, subscribe observer .etc.
+     */
+    abstract fun initViews()
+
+    /**
+     * this method will be called in [onCreate]. Avoid duplicate call load data when fragment recreates
+     */
+    abstract fun initData()
+
 }
