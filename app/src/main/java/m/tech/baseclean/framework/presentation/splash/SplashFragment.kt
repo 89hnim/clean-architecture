@@ -4,6 +4,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import m.tech.baseclean.databinding.FragmentSplashBinding
 import m.tech.baseclean.framework.presentation.common.BaseFragment
 import m.tech.baseclean.util.safeDelay
+import m.tech.baseclean.util.showKeyboard
 import java.util.logging.Handler
 
 @AndroidEntryPoint
@@ -15,12 +16,13 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     }
 
     override fun initDataBinding() {
-
     }
 
     override fun initViews() {
         showDialogLoading()
-        safeDelay(5000) { hideDialogLoading() }
+        safeDelay(5000) {
+            hideDialogLoading()
+       }
     }
 
 }
