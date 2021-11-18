@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.zxy.recovery.core.Recovery
 import dagger.hilt.android.HiltAndroidApp
-import m.tech.baseclean.framework.MainActivity
+import m.tech.baseclean.framework.presentation.MainActivity
 import timber.log.Timber
 
 @HiltAndroidApp
